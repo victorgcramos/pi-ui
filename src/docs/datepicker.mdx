@@ -51,7 +51,6 @@ import { DatePicker } from "../index";
             "Nov",
             "Dec"
           ]}
-          show={isOpen}
           onChange={onChange}
         />
       </Fragment>
@@ -154,6 +153,11 @@ To use the range option, just enable the `isRange` prop. In this case, `value` i
 
 <Playground>
   {() => {
+    // specify min, max properties in years object to limit selection
+    const years = {
+      min: { year: 2018, month: 1 },
+      max: { year: 2020, month: 2 },
+    }
     const initialValues = [
       { year: 2019, month: 3 },
       { year: 2020, month: 2 }
@@ -172,6 +176,7 @@ To use the range option, just enable the `isRange` prop. In this case, `value` i
       	<DatePicker
           value={values}
           isMonthsMode={true}
+          years={years}
           // enable isRange prop
           isRange={true}
           onChange={onChange}

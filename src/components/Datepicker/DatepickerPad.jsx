@@ -4,6 +4,8 @@ import styles from "./styles.css";
 import { classNames } from "../../utils";
 import { mapToArray } from "./helpers";
 
+const DEFAULT_MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
 const DatePickerPad = ({
   padIndex,
   values,
@@ -27,8 +29,8 @@ const DatePickerPad = ({
       ? lang
       : Array.isArray(lang.months)
       ? lang.months
-      : null
-    : null;
+      : DEFAULT_MONTHS
+    : DEFAULT_MONTHS;
   let prevCss = "";
   let prevMonthCss = "";
   let nextCss = "";
