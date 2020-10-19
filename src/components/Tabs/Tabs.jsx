@@ -11,9 +11,10 @@ const TabDropdownTrigger = ({
   open,
   ArrowComponent,
   childrenTabs,
-  activeTabIndex
+  activeTabIndex,
+  className
 }) => (
-  <div className={styles.activeDropdownTabWrapper}>
+  <div className={className}>
     {React.Children.map(childrenTabs, (child, index) => {
       if (index === activeTabIndex) {
         return React.cloneElement(child, {
@@ -37,6 +38,7 @@ const Tabs = ({
   wrap,
   mode,
   contentClassName,
+  activeTabClassName,
   ...props
 }) => {
   const dropdownMode = mode === "dropdown";
@@ -84,6 +86,10 @@ const Tabs = ({
         {...props}
         childrenTabs={children}
         activeTabIndex={activeTabIndex}
+        className={classNames(
+          activeTabClassName,
+          styles.activeDropdownTabWrapper
+        )}
       />
     );
   };
@@ -126,7 +132,8 @@ TabDropdownTrigger.propTypes = {
   open: PropTypes.bool,
   ArrowComponent: PropTypes.func,
   childrenTabs: PropTypes.node,
-  activeTabIndex: PropTypes.number
+  activeTabIndex: PropTypes.number,
+  className: PropTypes.string
 };
 
 Tabs.propTypes = {
@@ -137,7 +144,8 @@ Tabs.propTypes = {
   children: PropTypes.node.isRequired,
   wrap: PropTypes.bool,
   mode: PropTypes.oneOf(["horizontal", "vertical", "dropdown"]),
-  contentClassName: PropTypes.string
+  contentClassName: PropTypes.string,
+  activeTabClassName: PropTypes.string
 };
 
 Tabs.defaultProps = {
