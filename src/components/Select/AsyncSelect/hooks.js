@@ -57,6 +57,7 @@ export function useAsyncSelect(
   const previousCachedOptions = usePrevious(_cachedOptions);
 
   useMountEffect(() => {
+    console.log("chambraa");
     if (defaultOptions === true) _loadOptions(inputValue);
     else if (Array.isArray(defaultOptions))
       if (cacheOptions) updateCachedOptions(defaultOptions);

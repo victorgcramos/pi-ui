@@ -96,3 +96,7 @@
 .menuClosed .menu {
   display: none;
 }
+
+.clearable.valueSelected .separator {
+  margin-left: 1.5rem;
+}

@@ -5,7 +5,6 @@ import { useTransition } from "react-spring";
 
 export function useSelect(
   options,
-  setOption,
   disabled,
   onInputChange,
   inputValue,
@@ -14,31 +13,14 @@ export function useSelect(
   searchable = true,
   error = false
 ) {
-  const [menuOpened, setMenuOpened] = useState(false);
-  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
-
-  useEffect(() => {
-    if (disabled) {
-      setMenuOpened(false);
-      if (searchable && onInputChange && inputValue) onInputChange("");
-      return;
-    }
-    if (autoFocus) setMenuOpened(true);
-  }, [disabled, autoFocus, searchable, inputValue, onInputChange]);
-
-  useEffect(() => {
-    if (searchable && inputValue && !error) setMenuOpened(options.length > 0);
-  }, [searchable, inputValue, options, error]);
-
+  // Common Select Hooks
   const resetMenu = (focusedIndex = 0) => {
     setFocusedOptionIndex(focusedIndex);
     setMenuOpened(false);
     if (searchable && onInputChange && inputValue) onInputChange("");
   };
 
-  const [containerRef] = useClickOutside(resetMenu);
-
-  const selectOption = () => {
+  const onSelectOption = (cb) => {
     if (!menuOpened) return;
     const optionIndex = focusedOptionIndex;
     const optionByIndex = options[optionIndex];
@@ -46,7 +28,7 @@ export function useSelect(
       options[optionIndex].onClick();
       return;
     }
-    setOption(optionByIndex, optionIndex);
+    cb(optionByIndex, optionIndex);
   };
 
   const openMenu = () =>
@@ -64,6 +46,43 @@ export function useSelect(
     if (onInputChange) onInputChange(searchValue);
   };
 
+  // Keyboard Handlers
+  const onTypeArrowHandler = (isUp) => {
+    if (!menuOpened) return;
+    const maxOptionIndex = options.length - 1;
+    const newIndex =
+      focusedOptionIndex === maxOptionIndex
+        ? 0
+        : focusedOptionIndex + (isUp ? -1 : 1);
+    setFocusedOptionIndex(newIndex);
+  };
+  const onTypeDefaultHandler = (e) => {
+    if (!menuOpened) return;
+    const canChangeInput =
+      searchable &&
+      !inputValue &&
+      String.fromCharCode(e.keyCode).match(/(\w|\s)/g) && // rename this to a variable
+      onInputChange;
+    canChangeInput && onInputChange(e.key);
+  };
+
+  const [menuOpened, setMenuOpened] = useState(false);
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0);
+  const [containerRef] = useClickOutside(resetMenu);
+
+  useEffect(() => {
+    if (disabled) {
+      setMenuOpened(false);
+      if (searchable && onInputChange && inputValue) onInputChange("");
+      return;
+    }
+    if (autoFocus) setMenuOpened(true);
+  }, [disabled, autoFocus, searchable, inputValue, onInputChange]);
+
+  useEffect(() => {
+    if (searchable && inputValue && !error) setMenuOpened(options.length > 0);
+  }, [searchable, inputValue, options, error]);
+
   const transitions = useTransition(menuOpened, null, {
     from: { opacity: 0 },
     enter: { opacity: 1 },
@@ -76,56 +95,15 @@ export function useSelect(
     setFocusedOptionIndex,
     menuOpened,
     setMenuOpened,
-    selectOption,
+    onSelectOption,
     openMenu,
     containerRef,
     resetMenu,
     cancelSelection,
     onSearch,
-    transitions
-  };
-}
-
-export function useHandleKeyboardHookBasicParameters(
-  menuOpened,
-  options,
-  focusedOptionIndex,
-  setFocusedOptionIndex,
-  inputValue,
-  onInputChange,
-  searchable = true
-) {
-  const onTypeArrowDownHandler = () => {
-    if (!menuOpened) return;
-    const maxOptionIndex = options.length - 1;
-    const newIndex =
-      focusedOptionIndex === maxOptionIndex ? 0 : focusedOptionIndex + 1;
-    setFocusedOptionIndex(newIndex);
-  };
-
-  const onTypeArrowUpHandler = () => {
-    if (!menuOpened) return;
-    const maxOptionIndex = options.length - 1;
-    const newIndex =
-      focusedOptionIndex === 0 ? maxOptionIndex : focusedOptionIndex - 1;
-    setFocusedOptionIndex(newIndex);
-  };
-
-  const onTypeDefaultHandler = (e) => {
-    if (!menuOpened) return;
-    if (
-      searchable &&
-      !inputValue &&
-      String.fromCharCode(e.keyCode).match(/(\w|\s)/g) &&
-      onInputChange
-    )
-      onInputChange(e.key);
-  };
-
-  return {
-    onTypeArrowDownHandler,
-    onTypeArrowUpHandler,
-    onTypeDefaultHandler
+    transitions,
+    onTypeDefaultHandler,
+    onTypeArrowHandler
   };
 }
 
