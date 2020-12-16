@@ -5,7 +5,7 @@ import {
   defaultLabelKeyGetter,
   defaultValueKeyGetter
 } from "../helpers";
-import { useBasicSelect2 } from "./hooks";
+import { useBasicSelect } from "./hooks";
 import { classNames } from "../../../utils";
 import styles from "../styles.css";
 import Select from "../Select";
@@ -22,13 +22,15 @@ const BasicSelect = ({
   valueRenderer,
   optionsFilter,
   className,
+  autoFocus,
   searchable,
   value,
   onChange,
   inputValue,
+  onInputChange,
   ...props
 }) => {
-  const { filteredOptions, setOption } = useBasicSelect2({
+  const { filteredOptions, setOption } = useBasicSelect({
     disabled,
     onChange,
     options,
