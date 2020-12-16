@@ -50,7 +50,8 @@ const BasicSelect = ({
         BlankInput,
         OptionsSelected,
         controlsSelectWrapper,
-        ControlWrapper
+        ControlWrapper,
+        selectProps
       }) => (
         <>
           <Label />
@@ -59,7 +60,10 @@ const BasicSelect = ({
             {searchable && inputValue ? <Input /> : <BlankInput />}
             {controlsSelectWrapper(getOptionValue(value))}
           </ControlWrapper>
-          <OptionsSelected options={filteredOptions} onSelect={setOption} />
+          <OptionsSelected
+            options={filteredOptions}
+            onSelect={setOption(selectProps.resetMenu)}
+          />
         </>
       )}
     </Select>
